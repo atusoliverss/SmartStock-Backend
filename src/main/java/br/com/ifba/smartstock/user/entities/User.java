@@ -1,6 +1,6 @@
 package br.com.ifba.smartstock.user.entities;
 
-import br.com.ifba.smartstock.infrastructure.PersistenceEntity; // Classe base para persistência, com atributos e configurações comuns.
+import br.com.ifba.smartstock.infrastructure.entities.PersistenceEntity; // Classe base para persistência, com atributos e configurações comuns.
 import jakarta.persistence.*; // Importação das anotações do JPA para mapeamento da entidade.
 import lombok.AllArgsConstructor; // Lombok: Gera um construtor com todos os atributos.
 import lombok.Data; // Lombok: Gera automaticamente os métodos getter, setter, toString, equals e hashCode.

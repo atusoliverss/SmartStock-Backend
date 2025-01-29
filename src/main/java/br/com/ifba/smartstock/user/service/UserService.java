@@ -1,0 +1,76 @@
+package br.com.ifba.smartstock.user.service;
+
+import br.com.ifba.smartstock.infrastructure.exception.BusinessException;
+import br.com.ifba.smartstock.user.entities.User;
+import br.com.ifba.smartstock.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * Classe de serviço responsável pela lógica de negócios relacionada à entidade {@link User}.
+ * Implementa a interface {@link UserIService}.
+ */
+@Service
+@RequiredArgsConstructor // Gera um construtor automaticamente para os atributos finais (final).
+public class UserService implements UserIService {
+
+    // Repositório responsável pela persistência dos usuários.
+    private final UserRepository userRepository;
+
+    /**
+     * Retorna uma lista de todos os usuários cadastrados.
+     *
+     * @return Lista de usuários.
+     */
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    /**
+     * Busca um usuário pelo ID.
+     *
+     * @param id Identificador do usuário.
+     * @return Usuário encontrado.
+     * @throws BusinessException Caso o ID não seja encontrado.
+     */
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Id não encontrado"));
+    }
+
+    /**
+     * Salva um novo usuário no banco de dados.
+     *
+     * @param user Objeto usuário a ser salvo.
+     * @return Usuário salvo.
+     */
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    /**
+     * Exclui um usuário pelo ID.
+     *
+     * @param id Identificador do usuário a ser excluído.
+     */
+    @Override
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    /**
+     * Atualiza um usuário existente no banco de dados.
+     *
+     * @param user Objeto usuário com as novas informações.
+     * @return Usuário atualizado.
+     */
+    @Override
+    public User update(User user) {
+        return userRepository.save(user);
+    }
+}

@@ -1,4 +1,4 @@
-package br.com.ifba.smartstock.infrastructure;
+package br.com.ifba.smartstock.infrastructure.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;

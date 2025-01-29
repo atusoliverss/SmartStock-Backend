@@ -1,7 +1,11 @@
 package br.com.ifba.smartstock.user.controller;
 
+import br.com.ifba.smartstock.infrastructure.mapper.ObjectMapperUntil;
+import br.com.ifba.smartstock.user.dto.UserGetResponseDto;
+import br.com.ifba.smartstock.user.dto.UserPostRequestDto;
 import br.com.ifba.smartstock.user.entities.User; // Importação da entidade User, que representa os dados do usuário.
 import br.com.ifba.smartstock.user.repository.UserRepository; // Importação do repositório para manipulação de dados do banco.
+import br.com.ifba.smartstock.user.service.UserService;
 import lombok.RequiredArgsConstructor; // Lombok para gerar um construtor com os atributos obrigatórios.
 import org.springframework.http.HttpStatus; // Importação dos status HTTP usados nas respostas.
 import org.springframework.http.MediaType; // Importação dos tipos de mídia para especificação no cabeçalho HTTP.
@@ -14,7 +18,8 @@ import org.springframework.web.bind.annotation.*; // Anotações do Spring para 
 public class UserController {
 
     // Injeção de dependência do repositório de usuários.
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final ObjectMapperUntil objectMapperUntil;
 
     /**
      * Endpoint para buscar todos os usuários.
@@ -22,7 +27,7 @@ public class UserController {
      */
     @GetMapping(path = "/findall", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(objectMapperUntil.mapAll(userService.findAll(), UserGetResponseDto.class));
     }
 
     /**
@@ -31,8 +36,8 @@ public class UserController {
      * @return O usuário salvo, com status HTTP 201 (Created).
      */
     @PostMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
+    public ResponseEntity<?> save(@RequestBody UserPostRequestDto user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(objectMapperUntil.map(userService.save(objectMapperUntil.map(user, User.class)), UserGetResponseDto.class));
     }
 
     /**
@@ -42,7 +47,7 @@ public class UserController {
      */
     @DeleteMapping(path = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
-        userRepository.deleteById(id);
+        userService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -52,7 +57,7 @@ public class UserController {
      * @return O usuário atualizado, com status HTTP 200 (OK).
      */
     public ResponseEntity<?> update(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.save(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(objectMapperUntil.map(userService.save(objectMapperUntil.map(user, User.class)), UserGetResponseDto.class));
     }
 
 }
