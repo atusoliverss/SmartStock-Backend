@@ -1,8 +1,9 @@
 package br.com.ifba.smartstock.infrastructure.exception;
 
-import org.springframework.beans.factory.annotation.Value; // Permite a injeção de valores do arquivo de configuração application.properties.
 import org.springframework.http.HttpStatus; // Representa códigos de status HTTP.
 import org.springframework.http.ResponseEntity; // Encapsula a resposta HTTP.
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler; // Define métodos para lidar com exceções específicas.
 import org.springframework.web.bind.annotation.ResponseStatus; // Define o código de status HTTP para exceções tratadas.
 import org.springframework.web.bind.annotation.RestControllerAdvice; // Fornece manipulação global de exceções para controladores REST.
@@ -10,8 +11,11 @@ import org.springframework.web.context.request.WebRequest; // Representa a requi
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler; // Classe base para manipulação de exceções em REST.
 
 import java.time.LocalDateTime; // Representa a data e hora do erro.
+import java.util.HashMap;
 import java.util.LinkedHashMap; // Implementação de um mapa ordenado para armazenar detalhes do erro.
+import java.util.List;
 import java.util.Map; // Interface para armazenar pares chave-valor.
+import java.util.stream.Collectors;
 
 /**
  * Classe responsável por capturar e tratar exceções globais na aplicação.
@@ -19,12 +23,39 @@ import java.util.Map; // Interface para armazenar pares chave-valor.
  */
 
 @RestControllerAdvice
-public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+public class ApiExceptionHandler{
 
     // Obtém o valor da propriedade 'server.error.include-exception' do arquivo application.properties.
     // Define se a pilha de erro será exibida na resposta.
-    //@Value(value = "${server.error.include-exception}")
-    //private boolean printStackTrace;
+//    @Value(value = "${server.error.include-exception}")
+//    private  boolean printStackTrace;
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException methodArgumentNotValidException) {
+        // Lista de campos inválidos
+        List<FieldError> fieldErrors = methodArgumentNotValidException.getBindingResult().getFieldErrors();
+
+        String fields = fieldErrors.stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+
+        // Mensagem detalhada para desenvolvedores
+        String fieldsMessage = methodArgumentNotValidException.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+
+        // Criação do mapa de erro
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("error", "Bad Request, campos inválidos");
+        errorResponse.put("message", "Campos com erro");
+        errorResponse.put("developerMessage", fieldsMessage);
+        errorResponse.put("fields", fields);
+
+        // Retorno da resposta
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
     /**
      * Manipula exceções do tipo BusinessException.
@@ -38,9 +69,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handlerBusinessException(final BusinessException businessException, final WebRequest request) {
         final String errorMessage = businessException.getMessage();
-
-        // Registra o erro no log.
-        logger.error(errorMessage, businessException);
 
         // Constrói e retorna a resposta com os detalhes do erro.
         return buildErrorMessage(businessException, errorMessage, HttpStatus.INTERNAL_SERVER_ERROR, request);

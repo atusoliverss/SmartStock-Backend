@@ -5,6 +5,7 @@ import br.com.ifba.smartstock.user.entities.User;
 import br.com.ifba.smartstock.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -48,6 +49,8 @@ public class UserService implements UserIService {
      * @param user Objeto usuário a ser salvo.
      * @return Usuário salvo.
      */
+
+    @Transactional
     @Override
     public User save(User user) {
         return userRepository.save(user);
@@ -58,6 +61,7 @@ public class UserService implements UserIService {
      *
      * @param id Identificador do usuário a ser excluído.
      */
+    @Transactional
     @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
@@ -69,6 +73,7 @@ public class UserService implements UserIService {
      * @param user Objeto usuário com as novas informações.
      * @return Usuário atualizado.
      */
+    @Transactional
     @Override
     public User update(User user) {
         return userRepository.save(user);
