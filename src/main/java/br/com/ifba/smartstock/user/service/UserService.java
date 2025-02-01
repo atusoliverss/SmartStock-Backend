@@ -4,6 +4,8 @@ import br.com.ifba.smartstock.infrastructure.exception.BusinessException;
 import br.com.ifba.smartstock.user.entities.User;
 import br.com.ifba.smartstock.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +28,8 @@ public class UserService implements UserIService {
      * @return Lista de usuários.
      */
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     /**

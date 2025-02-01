@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler; // Define méto
 import org.springframework.web.bind.annotation.ResponseStatus; // Define o código de status HTTP para exceções tratadas.
 import org.springframework.web.bind.annotation.RestControllerAdvice; // Fornece manipulação global de exceções para controladores REST.
 import org.springframework.web.context.request.WebRequest; // Representa a requisição web no momento do erro.
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler; // Classe base para manipulação de exceções em REST.
 
 import java.time.LocalDateTime; // Representa a data e hora do erro.
 import java.util.HashMap;

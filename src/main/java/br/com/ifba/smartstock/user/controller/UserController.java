@@ -8,6 +8,8 @@ import br.com.ifba.smartstock.user.entities.User; // Importação da entidade Us
 import br.com.ifba.smartstock.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor; // Lombok para gerar um construtor com os atributos obrigatórios.
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus; // Importação dos status HTTP usados nas respostas.
 import org.springframework.http.MediaType; // Importação dos tipos de mídia para especificação no cabeçalho HTTP.
 import org.springframework.http.ResponseEntity; // Classe para encapsular as respostas HTTP.
@@ -27,8 +29,8 @@ public class UserController {
      * @return Lista de usuários no formato JSON, com status HTTP 200 (OK).
      */
     @GetMapping(path = "/findall", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(objectMapperUntil.mapAll(userService.findAll(), UserGetResponseDto.class));
+    public ResponseEntity<Page<UserGetResponseDto>> findAll(Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.findAll(pageable).map(c -> objectMapperUntil.map(c, UserGetResponseDto.class)));
     }
 
     /**
