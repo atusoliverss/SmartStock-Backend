@@ -4,6 +4,7 @@ import br.com.ifba.smartstock.infrastructure.mapper.ObjectMapperUntil;
 import br.com.ifba.smartstock.user.dto.UserGetResponseDto;
 import br.com.ifba.smartstock.user.dto.UserLoginPostRequestDto;
 import br.com.ifba.smartstock.user.dto.UserPostRequestDto;
+import br.com.ifba.smartstock.user.dto.UserPutRequestDto;
 import br.com.ifba.smartstock.user.entities.User; // Importação da entidade User, que representa os dados do usuário.
 // Importação do repositório para manipulação de dados do banco.
 import br.com.ifba.smartstock.user.service.UserService;
@@ -49,12 +50,12 @@ public class UserController {
 
     /**
      * Endpoint para deletar um usuário pelo ID.
-     * @param id ID do usuário a ser deletado, recebido como variável de caminho.
+     * @param email ID do usuário a ser deletado, recebido como variável de caminho.
      * @return Resposta sem conteúdo (HTTP 204 - No Content) após a exclusão.
      */
-    @DeleteMapping(path = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
-        userService.delete(id);
+    @DeleteMapping(path = "/delete/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@PathVariable("email") String email) {
+        userService.delete(email);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -63,9 +64,9 @@ public class UserController {
      * @param user Objeto User recebido no corpo da requisição no formato JSON.
      * @return O usuário atualizado, com status HTTP 200 (OK).
      */
-    @PostMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@RequestBody @Valid UserPostRequestDto user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(objectMapperUntil.map(userService.update(objectMapperUntil.map(user, User.class)), UserGetResponseDto.class));
+    @PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@RequestBody @Valid UserPutRequestDto user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(objectMapperUntil.map(userService.update(user), UserGetResponseDto.class));
     }
 
     @PostMapping(path = "/findbyloginandpassword", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

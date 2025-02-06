@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPostRequestDto {
+public class UserPutRequestDto {
     @JsonProperty("name")
     @NotBlank(message = "The name cannot be empty")
     @NotNull(message = "The name is mandatory")
     private String name;
 
     @JsonProperty("login")
-    @NotBlank(message = "The login cannot be empty")
+    @NotBlank( message = "The login cannot be empty")
     @NotNull(message = "The login is mandatory")
     @Size(min = 3, max = 30, message = "Login must have a minimum of 3 characters and a maximum of 30 characters")
     private String login;
@@ -27,9 +27,4 @@ public class UserPostRequestDto {
     @JsonProperty("email")
     @Email(message = "Invalid email")
     private String email;
-
-    @JsonProperty("password")
-    @NotBlank(message = "The password cannot be empty")
-    @NotNull(message = "The password is mandatory")
-    private String password;
 }

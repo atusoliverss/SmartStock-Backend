@@ -1,6 +1,7 @@
 package br.com.ifba.smartstock.user.service;
 
 import br.com.ifba.smartstock.infrastructure.exception.BusinessException;
+import br.com.ifba.smartstock.user.dto.UserPutRequestDto;
 import br.com.ifba.smartstock.user.entities.User;
 import br.com.ifba.smartstock.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,33 +63,66 @@ public class UserService implements UserIService {
     /**
      * Exclui um usuário pelo ID.
      *
-     * @param id Identificador do usuário a ser excluído.
+     * @param email Email do usuário a ser excluído.
      */
     @Transactional
     @Override
-    public void delete(Long id) {
-        userRepository.deleteById(id);
+    public void delete(String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user != null){
+            userRepository.deleteById(user.getId());
+        }
+    }
+
+
+    /**
+     * Atualiza um usuário existente no banco de dados com os novos dados fornecidos.
+     *
+     * @param user Objeto UserPutRequestDto contendo as novas informações do usuário.
+     * @return O usuário atualizado após a persistência no banco de dados.
+     * @throws BusinessException Se o usuário com o email fornecido não for encontrado.
+     */
+    @Transactional
+    @Override
+    public User update(UserPutRequestDto user) {
+        // Busca o usuário no banco de dados pelo email fornecido
+        User userFound = userRepository.findUserByEmail(user.getEmail());
+
+        // Verifica se o usuário foi encontrado
+        if (userFound != null) {
+            // Atualiza os dados do usuário encontrado com as novas informações
+            userFound.setName(user.getName());
+            userFound.setLogin(user.getLogin());
+
+            // Salva o usuário atualizado no banco de dados
+            return userRepository.save(userFound);
+        }
+
+        // Lança uma exceção caso o usuário não seja encontrado
+        throw new BusinessException("Usuário com Email: " + user.getEmail() + " não encontrado");
     }
 
     /**
-     * Atualiza um usuário existente no banco de dados.
+     * Busca um usuário pelo login.
      *
-     * @param user Objeto usuário com as novas informações.
-     * @return Usuário atualizado.
+     * @param login O login do usuário.
+     * @return Um Optional contendo o usuário, caso exista.
      */
-    @Transactional
-    @Override
-    public User update(User user) {
-        return userRepository.save(user);
-    }
-
     @Override
     public Optional<User> findByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 
+    /**
+     * Busca um usuário pelo login e senha.
+     *
+     * @param login    O login do usuário.
+     * @param password A senha do usuário.
+     * @return Um Optional contendo o usuário, caso as credenciais estejam corretas.
+     */
     @Override
     public Optional<User> findByLoginAndPassword(String login, String password) {
         return userRepository.findByLoginAndPassword(login, password);
     }
+
 }
