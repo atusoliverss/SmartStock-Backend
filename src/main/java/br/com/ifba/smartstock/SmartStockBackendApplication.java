@@ -15,7 +15,7 @@ public class SmartStockBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SmartStockBackendApplication.class, args);
 
-		SpringClient.main(args);
+		//SpringClient.main(args);
 	}
 
 }

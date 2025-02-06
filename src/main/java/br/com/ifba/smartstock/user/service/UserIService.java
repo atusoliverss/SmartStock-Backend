@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserIService {
     Page<User> findAll(Pageable pageable);
@@ -12,4 +13,7 @@ public interface UserIService {
     User save(User user);
     void delete(Long id);
     User update(User user);
+
+    Optional<User> findByLogin(String login);
+    Optional<User> findByLoginAndPassword(String login, String password);
 }

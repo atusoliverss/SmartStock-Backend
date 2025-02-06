@@ -16,12 +16,12 @@ public class User extends PersistenceEntity { // A classe User herda atributos e
     @Column(name = "name", nullable = false) // Indica que a coluna "name" não pode ser nula no banco de dados.
     private String name;
 
-    @Column(name = "login",nullable = false) // Define que a coluna "login" é única e não pode ser nula.
+    @Column(name = "login",nullable = false, unique = true) // Define que a coluna "login" é única e não pode ser nula.
     private String login;
 
     @Column(name = "password",nullable = false) // Indica que a coluna "password" não pode ser nula.
     private String password;
 
-    @Column(name = "email",nullable = false) // Indica que a coluna "email" não pode ser nula.
+    @Column(name = "email",nullable = false, unique = true) // Indica que a coluna "email" não pode ser nula.
     private String email;
 }

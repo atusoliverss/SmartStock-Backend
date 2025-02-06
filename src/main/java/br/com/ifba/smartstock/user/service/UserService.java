@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Classe de serviço responsável pela lógica de negócios relacionada à entidade {@link User}.
@@ -79,5 +80,15 @@ public class UserService implements UserIService {
     @Override
     public User update(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> findByLogin(String login) {
+        return userRepository.findByLogin(login);
+    }
+
+    @Override
+    public Optional<User> findByLoginAndPassword(String login, String password) {
+        return userRepository.findByLoginAndPassword(login, password);
     }
 }
